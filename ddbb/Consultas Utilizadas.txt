@@ -1,0 +1,59 @@
+Limpieza
+--------
+DELETE FROM Pedido;
+DELETE FROM Producto;
+DELETE FROM Cliente;
+DELETE FROM Proveedor;
+DELETE FROM Empleado;
+DELETE FROM Tiempo;
+DELETE FROM Pedido;	
+
+Tabla Producto
+--------------
+SELECT DISTINCT pro.nombre AS Producto, cat.nombre AS Categoria
+FROM Producto pro INNER JOIN Categoria cat ON (pro.categoriaID=cat.categoriaID)
+
+
+Tabla Cliente
+------------
+SELECT DISTINCT ContactName, City, Country
+FROM Cliente
+
+
+Tabla Empleado
+-------------
+SELECT DISTINCT LastName, ReportsTo
+FROM Empleado
+WHERE ReportsTo IS NOT NULL
+
+
+Tabla Tiempo
+-----------
+SELECT DISTINCT CONVERT (DATE,fecha) AS Fecha, CONVERT(INT, DATEPART(YEAR, fecha)) AS Anio,
+					   CONVERT(INT, DATEPART(QUARTER, fecha)) AS Trimestre,
+					   CONVERT(VARCHAR,DATEPART(MONTH, fecha)) AS Mes,
+					   CONVERT(INT, DATEPART(DAY, fecha)) AS Dia
+FROM Orden
+
+
+Tabla Proveedor
+--------------
+SELECT DISTINCT nombreCompania, pais 
+FROM Proveedor
+
+
+Tabla Pedido
+------------
+SELECT prodD.id AS ProductoID, cliD.id AS ClienteID, empD.id AS EmpleadoID, tiD.id AS TiempoID, provD.id AS ProveedorID, (detoN.Quantity*detoN.UnitPrice) AS PrecioTotal, detoN.Quantity AS Cantidad
+FROM Northwind.dbo.Producto prodN INNER JOIN Northwind.dbo.Categoria catN ON (prodN.categoriaID=catN.categoriaID)
+								  INNER JOIN Northwind.dbo.Proveedor provN ON (prodN.provedorID=provN.proveedorID)
+								  INNER JOIN Northwind.dbo.DetalleOrden detoN ON (prodN.productoID=detoN.productoID)
+								  INNER JOIN Northwind.dbo.Orden ordN ON (ordN.ordenID=detoN.ordenID)
+								  INNER JOIN Northwind.dbo.Cliente cliN ON (cliN.clienteID=ordN.clienteID)
+								  INNER JOIN Northwind.dbo.Empleado empN ON (empN.empleadoID=ordN.empleadoID)
+								  INNER JOIN NorthwindDataMart.dbo.Producto prodD ON (prodD.nombre=prodN.nombre)
+								  INNER JOIN NorthwindDataMart.dbo.Cliente cliD ON (cliD.nombre=cliN.ContactName)
+								  INNER JOIN NorthwindDataMart.dbo.Empleado empD ON (empD.apellido=empN.LastName)
+								  INNER JOIN NorthwindDataMart.dbo.Tiempo tiD ON (tiD.fecha= CONVERT(DATE,ordN.fecha))
+								  INNER JOIN NorthwindDataMart.dbo.Proveedor provD ON (provD.nombreCompania=provN.nombreCompania)
+
