@@ -1,0 +1,8 @@
+SELECT
+	{[measures].[nombre medida]} ON COLUMNS,
+	{[Dimension].[atributo]} ON ROWS
+FROM
+	[Nombre Cubo]
+WHERE
+	
+	
